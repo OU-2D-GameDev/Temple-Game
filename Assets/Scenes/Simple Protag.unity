@@ -125,7 +125,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &470869758
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -169,7 +169,8 @@ Transform:
   m_LocalPosition: {x: 0.015712228, y: 2.5140305, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
+  m_Children:
+  - {fileID: 1458501665}
   m_Father: {fileID: 0}
   m_RootOrder: 3
 --- !u!61 &470869760
@@ -197,7 +198,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b0d0942e11f883458625cc52add2301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
+  maxSpeed: 10
+  groundCheck: {fileID: 1458501665}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 256
+  jumpForce: 1300
 --- !u!1 &1088927853
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +313,7 @@ GameObject:
   - 4: {fileID: 1407729627}
   - 212: {fileID: 1407729626}
   - 61: {fileID: 1407729625}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Simple Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,12 +374,40 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1407729624}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.44, y: -1, z: 0}
+  m_LocalPosition: {x: 5.59, y: 0.64, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!1 &1458501664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1458501665}
+  m_Layer: 0
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1458501665
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1458501664}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.05, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 470869759}
+  m_RootOrder: 0
 --- !u!1 &1853986572
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +418,7 @@ GameObject:
   - 4: {fileID: 1853986575}
   - 212: {fileID: 1853986574}
   - 61: {fileID: 1853986573}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Simple Terrain (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
