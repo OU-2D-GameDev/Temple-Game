@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Fungus;
 using System.Collections;
 
 public class ItemSelector : MonoBehaviour {
@@ -11,6 +12,8 @@ public class ItemSelector : MonoBehaviour {
 	public Sprite sprite2;
 	public Sprite sprite3;
 	public Sprite sprite4;
+	public bool tutorialMode;
+	public Flowchart flowchart;
 
 	private SpriteRenderer selectedItemSpriteRenderer;
 	private Animator animator;
@@ -57,6 +60,9 @@ public class ItemSelector : MonoBehaviour {
 			}
 			animator.Play ("CloseSwitcher");
 			active = false;
+
+			if (tutorialMode)
+				flowchart.SendFungusMessage ("p3");
 		}
 	}
 }

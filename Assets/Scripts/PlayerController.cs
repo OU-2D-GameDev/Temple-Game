@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Fungus;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour
@@ -11,8 +12,13 @@ public class PlayerController : MonoBehaviour
     float groundRadius = 0.2f;
     public Transform groundCheck;
     public LayerMask whatIsGround;
-
     public float jumpForce = 700f;
+
+	public bool tutorialMode;
+	public Flowchart flowchart;
+	public float distanceMoved = 0f;
+
+	private bool controlEnabled = false;
 
     void Start()
     {
@@ -21,16 +27,23 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
+		if (controlEnabled) {
+			grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
 
-        float move = Input.GetAxis("Horizontal");
+			float move = Input.GetAxis("Horizontal");
 
-        rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
+			rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
+			distanceMoved += Mathf.Abs(rb.velocity.x * Time.fixedDeltaTime);
+			if (tutorialMode) {
+				if (distanceMoved >= 5f)
+					flowchart.SendFungusMessage ("p4");
+			}
 
-        if (move > 0 && !facingRight)
-            flip();
-        else if (move < 0 && facingRight)
-            flip();
+			if (move > 0 && !facingRight)
+				flip();
+			else if (move < 0 && facingRight)
+				flip();
+		}
     }
 
     void Update()
@@ -39,7 +52,15 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(new Vector2(0, jumpForce));
     }
 
-    void flip()
+	public void EnableControl() {
+		controlEnabled = true;
+	}
+
+	public void EisableControl() {
+		controlEnabled = false;
+	}
+
+    private void flip()
     {
         facingRight = !facingRight;
         Vector3 theScale = transform.localScale;
