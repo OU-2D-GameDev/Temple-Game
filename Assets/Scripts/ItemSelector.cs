@@ -62,8 +62,7 @@ public class ItemSelector : MonoBehaviour {
 			active = false;
 
 			if (tutorialMode) {
-				flowchart.SendFungusMessage ("p3");
-				tutorialMode = false;
+				flowchart.SetBooleanVariable ("switchedItems", true);
 			}
 		}
 	}

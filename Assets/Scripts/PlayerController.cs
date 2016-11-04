@@ -19,12 +19,20 @@ public class PlayerController : MonoBehaviour
 	public float distanceMoved = 0f;
 
 	private bool controlEnabled = false;
-	private bool tutorial2 = false;
+
 	private bool jumped = false;
+	private bool crouched = false;
+
+	private Animator animator;
+	private BoxCollider2D boxCollider;
+	private SpriteRenderer playerSprite;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+		rb = GetComponent<Rigidbody2D>();
+		animator = GetComponent<Animator>();
+		boxCollider = GetComponent<BoxCollider2D>();
+		playerSprite = GetComponent<SpriteRenderer> ();
     }
 
     void FixedUpdate()
@@ -35,21 +43,19 @@ public class PlayerController : MonoBehaviour
 			float move = Input.GetAxis("Horizontal");
 
 			rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
-			distanceMoved += Mathf.Abs(rb.velocity.x * Time.fixedDeltaTime);
+			flowchart.SetFloatVariable ("distanceMoved", flowchart.GetFloatVariable ("distanceMoved")
+			+ Mathf.Abs (rb.velocity.x * Time.fixedDeltaTime));
+
 			if (tutorialMode) {
-				if (tutorial2) {
+				Debug.Log ("working");
+				if (distanceMoved >= 5.0f) {
 					if (jumped) {
 						flowchart.SendFungusMessage ("p5");
 						tutorialMode = false;
 					}
-				} else {
-					if (distanceMoved >= 5.0f) {
-						flowchart.SendFungusMessage ("p4");
-						tutorial2 = true;
-					}
 				}
-				if (tutorial2 && jumped) {
-					
+				if (distanceMoved >= 5.0f) {
+					flowchart.SendFungusMessage ("p4");
 				}
 			}
 
@@ -64,16 +70,21 @@ public class PlayerController : MonoBehaviour
     {
 		if (grounded && Input.GetKeyDown (KeyCode.Space)) {
 			rb.AddForce (new Vector2 (0, jumpForce));
-			if (tutorial2)
-				jumped = true;
 		}
+
+		if (Input.GetKey(KeyCode.LeftShift)) 
+		{
+			animator.SetBool ("playerIsCrouching", true);
+		}
+		
+		OnCrouching ();
     }
 
 	public void EnableControl() {
 		controlEnabled = true;
 	}
 
-	public void EisableControl() {
+	public void DisableControl() {
 		controlEnabled = false;
 	}
 
@@ -83,5 +94,29 @@ public class PlayerController : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
-    }
+	}
+	
+	void OnCrouching() 
+	{
+		if (animator.GetBool("playerIsCrouching")) 
+		{
+			// Adjust the BoxCollider2D dimensions for crouching
+			Vector3 newColliderSize = playerSprite.bounds.size;
+			boxCollider.size = new Vector2(newColliderSize.x, newColliderSize.y);
+			
+			if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) {
+				bool pc1 = animator.GetBool ("playerCrouch1");
+				animator.SetBool ("playerCrouch1", !pc1);
+			}
+		}
+		
+		if (!Input.GetKey(KeyCode.LeftShift)) 
+		{
+			// Adjust the BoxCollider2D dimensions for standing up
+			Vector3 newColliderSize = playerSprite.bounds.size;
+			boxCollider.size = new Vector2(newColliderSize.x, newColliderSize.y);
+			
+			animator.SetBool ("playerIsCrouching", false);
+		}
+	}
 }
