@@ -61,8 +61,10 @@ public class ItemSelector : MonoBehaviour {
 			animator.Play ("CloseSwitcher");
 			active = false;
 
-			if (tutorialMode)
+			if (tutorialMode) {
 				flowchart.SendFungusMessage ("p3");
+				tutorialMode = false;
+			}
 		}
 	}
 }

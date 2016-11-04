@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
 	public float distanceMoved = 0f;
 
 	private bool controlEnabled = false;
+	private bool tutorial2 = false;
+	private bool jumped = false;
 
     void Start()
     {
@@ -35,8 +37,20 @@ public class PlayerController : MonoBehaviour
 			rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
 			distanceMoved += Mathf.Abs(rb.velocity.x * Time.fixedDeltaTime);
 			if (tutorialMode) {
-				if (distanceMoved >= 5f)
-					flowchart.SendFungusMessage ("p4");
+				if (tutorial2) {
+					if (jumped) {
+						flowchart.SendFungusMessage ("p5");
+						tutorialMode = false;
+					}
+				} else {
+					if (distanceMoved >= 5.0f) {
+						flowchart.SendFungusMessage ("p4");
+						tutorial2 = true;
+					}
+				}
+				if (tutorial2 && jumped) {
+					
+				}
 			}
 
 			if (move > 0 && !facingRight)
@@ -48,8 +62,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (grounded && Input.GetKeyDown(KeyCode.Space))
-            rb.AddForce(new Vector2(0, jumpForce));
+		if (grounded && Input.GetKeyDown (KeyCode.Space)) {
+			rb.AddForce (new Vector2 (0, jumpForce));
+			if (tutorial2)
+				jumped = true;
+		}
     }
 
 	public void EnableControl() {
