@@ -20,9 +20,6 @@ public class PlayerController : MonoBehaviour
 
 	private bool controlEnabled = false;
 
-	private bool jumped = false;
-	private bool crouched = false;
-
 	private Animator animator;
 	private BoxCollider2D boxCollider;
 	private SpriteRenderer playerSprite;
@@ -45,20 +42,7 @@ public class PlayerController : MonoBehaviour
 			rb.velocity = new Vector2(move * maxSpeed, rb.velocity.y);
 			flowchart.SetFloatVariable ("distanceMoved", flowchart.GetFloatVariable ("distanceMoved")
 			+ Mathf.Abs (rb.velocity.x * Time.fixedDeltaTime));
-
-			if (tutorialMode) {
-				Debug.Log ("working");
-				if (distanceMoved >= 5.0f) {
-					if (jumped) {
-						flowchart.SendFungusMessage ("p5");
-						tutorialMode = false;
-					}
-				}
-				if (distanceMoved >= 5.0f) {
-					flowchart.SendFungusMessage ("p4");
-				}
-			}
-
+			
 			if (move > 0 && !facingRight)
 				flip();
 			else if (move < 0 && facingRight)
@@ -70,14 +54,22 @@ public class PlayerController : MonoBehaviour
     {
 		if (grounded && Input.GetKeyDown (KeyCode.Space)) {
 			rb.AddForce (new Vector2 (0, jumpForce));
+			if (tutorialMode)
+				flowchart.SetBooleanVariable ("jumped", true);
 		}
 
 		if (Input.GetKey(KeyCode.LeftShift)) 
 		{
 			animator.SetBool ("playerIsCrouching", true);
+			if (tutorialMode)
+				flowchart.SetBooleanVariable ("crouched", true);
 		}
 		
 		OnCrouching ();
+
+		if (flowchart.GetBooleanVariable ("jumped") && flowchart.GetBooleanVariable ("crouched"))
+			flowchart.SetBooleanVariable ("jumpedAndCrouched", true);
+			
     }
 
 	public void EnableControl() {
